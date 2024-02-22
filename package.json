@@ -1,0 +1,66 @@
+{
+  "name": "scheduler",
+  "private": true,
+  "version": "0.0.0",
+  "main": "electron/electron.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "electron": "wait-on tcp:3000 && cross-env IS_DEV=true electron .",
+    "electron:pack": "electron-builder --dir",
+    "electron:dev": "concurrently -k \"cross-env BROWSER=none npm run dev\" \"npm run electron\"",
+    "electron:builder": "electron-builder",
+    "build:for:electron": "cross-env ELECTRON=true vite build",
+    "app:build": "npm run build:for:electron && npm run electron:builder"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.56",
+    "@types/react-dom": "^18.2.19",
+    "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^29.0.1",
+    "electron-builder": "^24.12.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "vite": "^5.1.4",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.bnksys.sharedschedule",
+    "productName": "Shared Schedule",
+    "copyright": "Copyright © 2024 ryuhojin",
+    "mac": {
+      "target": [
+        "default"
+      ],
+      "category": "public.app-category.productivity"
+    },
+    "dmg": {
+      "title": "sharedschedule"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist_electron"
+    }
+  }
+}
