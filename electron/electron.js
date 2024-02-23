@@ -1,8 +1,8 @@
 const path = require('path');
-const { app, BrowserWindow, shell } = require('electron');
- 
+const { app, BrowserWindow, shell, Menu } = require('electron');
+const menulist = require('./menulist');
 const isDev = process.env.IS_DEV == "true" ? true : false;
- 
+
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1024,
@@ -16,14 +16,14 @@ function createWindow() {
       contextIsolation: false
     },
   });
- 
-   mainWindow.webContents.setWindowOpenHandler(({url}) => {
-     shell.openExternal(url);
-     return { action: "deny" };
-   });
 
- 
- 
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: "deny" };
+  });
+
+
+
   mainWindow.loadURL(
     isDev
       ? 'http://localhost:3000'
@@ -33,17 +33,19 @@ function createWindow() {
   if (isDev) {
     //mainWindow.webContents.openDevTools();
   }
- 
+
 }
- 
- 
+
+const menu = Menu.buildFromTemplate(menulist);
+Menu.setApplicationMenu(menu);
+
 app.whenReady().then(() => {
   createWindow()
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 });
- 
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
