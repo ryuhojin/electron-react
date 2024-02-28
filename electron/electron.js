@@ -1,7 +1,21 @@
 const path = require('path');
 const { app, BrowserWindow, shell, Menu } = require('electron');
+const http = require('http');
 const menulist = require('./menulist');
 const isDev = process.env.IS_DEV == "true" ? true : false;
+
+const server = http.createServer((req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Content-Type', 'application/json')
+
+  if (req.url == '/api/data') {
+    const responseData = { message: 'this is a response from the Get APi' };
+    res.end(JSON.stringify(responseData));
+  } else {
+    res.statusCode = 404;
+    res.end(JSON.stringify({ error: 'NOTFOUND' }))
+  }
+})
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -44,7 +58,15 @@ app.whenReady().then(() => {
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+
+  server.listen('8080', () => {
+    console.log('8080')
+  })
 });
+
+app.on('before-quit', () => {
+  server.close();
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

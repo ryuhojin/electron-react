@@ -1,10 +1,7 @@
-import { http } from 'msw';
+import { getCalendar } from './resolvers/calendar'
 
 const handlers = [
-    http.get('/api/test', ({ request }) => {
-        const url = new URL(request.url)
-        console.log(url)
-    })
+    getCalendar
 ]
 
 export { handlers };
